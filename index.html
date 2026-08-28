@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Derrick - Dashboard</title>
+    <title>Derrick - Search Dashboard</title>
     <style>
         body {
             background-color: #202124;
@@ -23,16 +23,22 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 40px;
+            margin-top: 20px;
+        }
+        .time-display {
+            font-size: 14px;
+            color: #9aa0a6;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
         h1 {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 400;
             margin-bottom: 24px;
         }
         .search-form {
             width: 100%;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
         .search-bar {
             width: 100%;
@@ -45,31 +51,72 @@
             outline: none;
             box-sizing: border-box;
         }
+        .links-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
         .link-card {
             width: 100%;
             background-color: #303134;
             border: 1px solid #5f6368;
-            padding: 14px 16px;
-            border-radius: 8px;
+            padding: 14px 18px;
+            border-radius: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #e8eaed;
             text-decoration: none;
-            margin-bottom: 12px;
             box-sizing: border-box;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .link-card:active {
+            background-color: #3c4043;
+            border-color: #8ab4f8;
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="time-display" id="live-clock"></div>
         <h1>Derrick</h1>
+        
         <form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
             <input type="text" name="q" class="search-bar" placeholder="Search Google or type a URL" autocomplete="off">
         </form>
-        <a href="https://github.com/derrick183-git" target="_blank" class="link-card">
-            <span>Explore my GitHub repositories        </a>
+
+        <div class="links-container">
+            <a href="https://github.com/derrick183-git" target="_blank" class="link-card">
+                <span>GitHub Repositories            </a>
+            <a href="https://www.youtube.com" target="_blank" class="link-card">
+                <span>YouTube            </a>
+            <a href="https://www.facebook.com" target="_blank" class="link-card">
+                <span>Facebook            </a>
+            <a href="https://audiomack.com" target="_blank" class="link-card">
+                <span>Audiomack</span>
+                <span>b</span>
+                <span>b            </a>
+        </div>
     </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            document.getElementById('live-clock').innerText = `${hours}:${minutes} ${ampm}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
 </body>
 </html>
-
+</span>
+                <span>b            </a>
+            <a href="https://open.spotify.com" target="_blank" class="link-card">
+                <span>Spotify</span>
+                <span>b</span>
+                <span>b

@@ -3,27 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Derrick - Search Dashboard</title>
+    <title>Derrick - Dashboard</title>
     <style>
-        :root {
-            --bg-color: #202124;
-            --text-color: #e8eaed;
-            --surface-color: #303134;
-            --border-color: #5f6368;
-            --accent-color: #8ab4f8;
-        }
-
-        [data-theme="light"] {
-            --bg-color: #ffffff;
-            --text-color: #202124;
-            --surface-color: #f1f3f4;
-            --border-color: #dadce0;
-            --accent-color: #1a73e8;
-        }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #202124;
+            color: #e8eaed;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 20px;
@@ -32,120 +16,61 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
-            transition: background 0.3s, color 0.3s;
         }
-
-        .top-bar {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            margin-bottom: 40px;
-        }
-
-        .theme-toggle {
-            background: var(--surface-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
         .container {
             width: 100%;
             max-width: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1;
+            margin-top: 40px;
         }
-
         h1 {
             font-size: 48px;
             font-weight: 400;
             margin-bottom: 24px;
-            letter-spacing: -1px;
         }
-
         .search-form {
             width: 100%;
-            position: relative;
             margin-bottom: 30px;
         }
-
         .search-bar {
             width: 100%;
-            padding: 14px 20px 14px 45px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
+            padding: 14px 20px;
+            background-color: #303134;
+            border: 1px solid #5f6368;
             border-radius: 24px;
-            color: var(--text-color);
+            color: #e8eaed;
             font-size: 16px;
             outline: none;
             box-sizing: border-box;
-            transition: box-shadow 0.2s;
         }
-
-        .search-bar:focus {
-            box-shadow: 0 1px 6px rgba(32,33,36,.28);
-            border-color: transparent;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--border-color);
-            pointer-events: none;
-        }
-
-        /* App Grid shortcuts */
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-
-        .app-tile {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 13px;
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .app-tile:hover {
-            transform: translateY(-2px);
-            background-color: var(--border-color);
-        }
-
-        /* Trending / Quick Links Section */
-        .section-title {
-            width: 100%;
-            font-size: 14px;
-            color: var(--border-color);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .links-list {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-
         .link-card {
-           
+            width: 100%;
+            background-color: #303134;
+            border: 1px solid #5f6368;
+            padding: 14px 16px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #e8eaed;
+            text-decoration: none;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Derrick</h1>
+        <form class="search-form" action="https://www.google.com/search" method="get" target="_blank">
+            <input type="text" name="q" class="search-bar" placeholder="Search Google or type a URL" autocomplete="off">
+        </form>
+        <a href="https://github.com/derrick183-git" target="_blank" class="link-card">
+            <span>Explore my GitHub repositories        </a>
+    </div>
+</body>
+</html>
+</span>
+            <span>b

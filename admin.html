@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BuzzWave Publisher</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.admin{max-width:850px;margin:45px auto}.admin h1{font-size:48px;letter-spacing:-3px}
+.admin form{display:grid;gap:8px}.admin input,.admin select,.admin textarea{width:100%;background:#0d0d10;color:#fff;border:1px solid #303039;padding:14px;border-radius:10px;font:inherit;margin-bottom:10px}.admin textarea{min-height:260px}
+.admin button{background:#ff2f78;color:#fff;border:0;padding:14px 18px;border-radius:10px;font-weight:900;font-size:15px}
+.box{background:#111114;border:1px solid #2a2a30;border-radius:18px;padding:20px;margin-bottom:20px}
+.help{color:#aaa}.status{margin-top:15px;padding:13px;border-radius:10px;background:#17171b;white-space:pre-wrap}.danger{color:#ff9ab9}
+</style>
+</head>
+<body>
+<div class="breaking"><span>BUZZWAVE</span> SIMPLE PUBLISHING</div>
+<header class="nav"><div class="wrap navin"><a class="brand" href="index.html">Buzz<span>Wave</span></a></div></header>
+
+<main class="wrap admin">
+  <div class="eyebrow">EDITOR DASHBOARD</div>
+  <h1>Publish without editing HTML.</h1>
+  <p class="help">Connect this page to your GitHub repository. Every time you publish, it creates the article file and updates BuzzWave's story feed automatically.</p>
+
+  <div class="box">
+    <h2>1. GitHub connection</h2>
+    <p class="help">Use a GitHub fine-grained token with <b>Contents: Read and write</b> access to your BuzzWave repository. The token is used only in this browser session and is not saved.</p>
+    <input id="owner" value="derrick183-git" placeholder="GitHub username">
+    <input id="repo" value="derrick183-git.github.io" placeholder="Repository name">
+    <input id="branch" value="main" placeholder="Branch">
+    <input id="token" type="password" placeholder="GitHub token (ghp_... or github_pat_...)">
+  </div>
+
+  <div class="box">
+    <h2>2. Write your story</h2>
+    <form id="publishForm">
+      <label>Headline</label>
+      <input id="title" required placeholder="Enter your headline">
+
+      <label>Category</label>
+      <select id="category">
+        <option>News</option><option>Entertainment</option><option>Celebrity</option>
+        <option>Music</option><option>Culture</option>
+      </select>
+
+      <label>Author</label>
+      <input id="author" value="BuzzWave Editorial" placeholder="Author name">
+
+      <label>Cover image URL (optional)</label>
+      <input id="image" placeholder="https://...">
+
+      <label>Story</label>
+      <textarea id="body" required placeholder="Write each paragraph on a new line."></textarea>
+
+      <button type="submit">🚀 Publish Story</button>
+    </form>
+    <div id="status" class="status">Ready to publish.</div>
+  </div>
+
+  <p class="help"><span class="danger">Security:</span> Do not paste your GitHub password. Create a dedicated fine-grained GitHub token and give it access only to this repository.</p>
+</main>
+
+<footer><div class="wrap"><a class="brand" href="index.html">Buzz<span>Wave</span></a></div></footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function slugify(s){
+  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80) || 'story';
+}
+function b64(text){
+  const bytes = new TextEncoder().encode(text);
+  let bin=''; bytes.forEach(b=>bin+=String.fromCharCode(b));
+  return btoa(bin);
+}
+async function github(path, options={}){
+  const owner=$('owner').value.trim(), repo=$('repo').value.trim(), token=$('token').value.trim();
+  if(!owner||!repo||!token) throw new Error('Enter your GitHub username, repository and token first.');
+  const r=await fetch('https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path,{
+    ...options, headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}
+  });
+  const data=await r.json();
+  if(!r.ok) throw new Error(data.message || ('GitHub error '+r.status));
+  return data;
+}
+function articleHTML(title,cat,author,image,body){
+  const paragraphs=body.split(/\n+/).filter(Boolean).map(p=>'<p>'+esc(p)+'</p>').join('');
+  const cover=image ? '<div class="articleHero" style="background-image:url(\\''+esc(image)+'\\')"></div>' : '';
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${esc(title)}"><title>${esc(title)} — BuzzWave</title><link rel="stylesheet" href="../assets/style.css"></head><body><div class="breaking"><span>BUZZWAVE</span> Fresh stories every day.</div><header class="nav"><div class="wrap navin"><a class="brand" href="../index.html">Buzz<span>Wave</span></a></div></header><main class="wrap"><div class="articleHead"><label>${esc(cat).toUpperCase()}</label><h1>${esc(title)}</h1><div class="articleMeta">By ${esc(author||'BuzzWave Editorial')} · ${new Date().toLocaleDateString()}</div></div>${cover}<article class="articleBody">${paragraphs}<div class="share"><a href="https://www.facebook.com/sharer/sharer.php">Facebook</a><a href="https://twitter.com/intent/tweet">X</a><a href="https://wa.me/">WhatsApp</a></div></article><div class="ad">ADVERTISEMENT · ARTICLE AD SLOT</div></main><footer><div class="wrap"><a class="brand" href="../index.html">Buzz<span>Wave</span></a></div></footer></body></html>`;
+}
+$('publishForm').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const status=$('status'); status.textContent='Publishing...';
+  try{
+    const owner=$('owner').value.trim(), repo=$('repo').value.trim(), branch=$('branch').value.trim()||'main';
+    const title=$('title').value.trim(), cat=$('category').value, author=$('author').value.trim()||'BuzzWave Editorial';
+    const image=$('image').value.trim(), body=$('body').value.trim();
+    const base=slugify(title), stamp=Date.now(), filename=base+'-'+stamp+'.html';
+    const html=articleHTML(title,cat,author,image,body);
+    let articlePath='articles/'+filename;
+    let articleRes;
+    try{
+      const existing=await github(articlePath);
+      articleRes=await github(articlePath,{method:'PUT',body:JSON.stringify({message:'Publish: '+title,content:b64(html),sha:existing.sha,branch})});
+    }catch(err){
+      articleRes=await github(articlePath,{method:'PUT',body:JSON.stringify({message:'Publish: '+title,content:b64(html),branch})});
+    }
+
+    // Update a lightweight story index used by the homepage.
+    let index=[];
+    try{
+      const old=await github('stories.json');
+      const decoded=decodeURIComponent(escape(atob(old.content.replace(/\n/g,''))));
+      index=JSON.parse(decoded);
+      if(!Array.isArray(index)) index=[];
+    }catch(_){}
+    index.unshift({title,category:cat,author,date:new Date().toISOString(),url:articlePath,image});
+    index=index.slice(0,50);
+
+    let oldSha;
+    try{ oldSha=(await github('stories.json')).sha; }catch(_){}
+    const payload={message:'Update BuzzWave story feed',content:b64(JSON.stringify(index,null,2)),branch};
+    if(oldSha) payload.sha=oldSha;
+    await github('stories.json',{method:'PUT',body:JSON.stringify(payload)});
+
+    status.textContent='✅ Published successfully!\\n\\nArticle: '+articlePath+'\\n\\nGitHub Pages may take a short moment to rebuild.';
+    $('title').value=''; $('body').value=''; $('image').value='';
+  }catch(err){ status.textContent='❌ '+err.message; }
+});
+</script>
+</body>
+</html>
